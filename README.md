@@ -1,5 +1,7 @@
 # SnipLog — Simple Note & Screenshot Saver
 
+![Sniptool Screenshot](screenshots/sniptool.png)
+
 SnipLog is a lightweight web app for quickly saving text snippets, screenshots (including WebP images), links, and notes — perfect for clipping news, ideas, or research in one place.
 
 ## Features
