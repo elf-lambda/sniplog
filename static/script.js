@@ -131,28 +131,35 @@ document.getElementById("editor").addEventListener("paste", function (e) {
                 const reader = new FileReader();
 
                 reader.onload = function (event) {
+                    const wrapper = document.createElement("div");
+                    wrapper.style.display = "block";
+                    wrapper.style.margin = "10px 0";
+
                     const img = document.createElement("img");
                     img.src = event.target.result;
                     img.alt = "Pasted Image";
+                    img.setAttribute("contenteditable", "false");
                     img.style.maxWidth = "600px";
                     img.style.maxHeight = "400px";
                     img.style.width = "auto";
                     img.style.height = "auto";
+                    img.style.display = "block";
+                    img.style.pointerEvents = "auto";
+                    img.style.userSelect = "auto";
 
-                    // Insert image at caret position
+                    wrapper.appendChild(img);
+
                     const selection = window.getSelection();
                     if (!selection.rangeCount) return;
                     const range = selection.getRangeAt(0);
                     range.deleteContents();
-                    range.insertNode(img);
+                    range.insertNode(wrapper);
 
-                    // Move cursor after image
-                    range.setStartAfter(img);
+                    range.setStartAfter(wrapper);
                     range.collapse(true);
                     selection.removeAllRanges();
                     selection.addRange(range);
                 };
-
                 reader.readAsDataURL(blob);
                 return;
             }

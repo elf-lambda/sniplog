@@ -94,6 +94,14 @@ body {
     overflow-y: auto;
 }
 
+.editor img {
+    max-width: 100%;
+    height: auto;
+    pointer-events: auto;
+    user-select: auto;
+    display: block;
+}
+
 #save-status {
     margin-left: auto;
     font-size: 0.9em;
