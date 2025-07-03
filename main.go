@@ -7,7 +7,10 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"sort"
+	"strconv"
 	"strings"
+	"time"
 )
 
 // Util
@@ -57,15 +60,36 @@ func listNotes(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Failed to read notes directory", http.StatusInternalServerError)
 		return
 	}
-
 	var notes []Note
 	for _, f := range files {
 		if strings.Contains(f.Name(), "deletebackup_") {
 			continue
 		}
-		id := strings.TrimSuffix(f.Name(), filepath.Ext(f.Name()))
-		notes = append(notes, Note{ID: id, Title: id})
+
+		filename := strings.TrimSuffix(f.Name(), filepath.Ext(f.Name()))
+
+		datePart := strings.Split(filename, " - ")[0]
+
+		t, err := time.Parse("2-1-2006", datePart)
+		if err != nil {
+			notes = append(notes, Note{ID: filename, Title: filename})
+			continue
+		}
+
+		timestamp := t.Unix()
+		// Send the date as unix time int
+		notes = append(notes, Note{
+			ID:    strconv.FormatInt(timestamp, 10),
+			Title: filename,
+		})
 	}
+
+	// Sort by timestamp (latest first)
+	sort.Slice(notes, func(i, j int) bool {
+		idI, _ := strconv.ParseInt(notes[i].ID, 10, 64)
+		idJ, _ := strconv.ParseInt(notes[j].ID, 10, 64)
+		return idI > idJ
+	})
 
 	json.NewEncoder(w).Encode(notes)
 }

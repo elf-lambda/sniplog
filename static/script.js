@@ -18,7 +18,7 @@ function loadNotes() {
                 notes.forEach((note) => {
                     const div = document.createElement("div");
                     div.textContent = note.title;
-                    div.onclick = () => loadNote(note.id);
+                    div.onclick = () => loadNote(note.title);
                     list.appendChild(div);
                 });
             }
@@ -26,6 +26,7 @@ function loadNotes() {
 }
 
 function loadNote(id) {
+    console.log(id);
     fetch(`/note/${id}`)
         .then((res) => res.json())
         .then((note) => {
@@ -90,7 +91,8 @@ function newSnippet() {
         "-" +
         (currentdate.getMonth() + 1) +
         "-" +
-        currentdate.getFullYear();
+        currentdate.getFullYear() +
+        " - ";
     document.getElementById("editor").innerHTML = "";
     document.getElementById("save-status").innerHTML = "New snippet started";
     currentId = "";
