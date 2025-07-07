@@ -16,33 +16,40 @@
         <div id="noteList"></div>
     </div>
     <div class="editor-container">
-
-
         <div class="button-bar">
             <input id="noteId" placeholder="Note name..." />
 
             <button onclick="formatText('bold')" title="Bold"><i class="fa fa-bold"></i></button>
             <button onclick="formatText('italic')" title="Italic"><i class="fa fa-italic"></i></button>
             <button onclick="formatText('underline')" title="Underline"><i class="fa fa-underline"></i></button>
-
             <button onclick="formatText('h1')" title="Heading"><i class="fa fa-heading"></i></button>
-
             <button onclick="insertLink()" title="Insert Link"><i class="fa fa-link"></i></button>
-
             <input type="color" onchange="setColor(this.value)" title="Text Color" />
-
             <button onclick="document.execCommand('undo')" title="Undo"><i class="fa fa-undo"></i></button>
             <button onclick="document.execCommand('redo')" title="Redo"><i class="fa fa-redo"></i></button>
-
             <button onclick="saveNote()" title="Save"><i class="fa fa-save"></i> Save</button>
             <button onclick="deleteNote()" title="Delete"><i class="fa fa-trash"></i> Delete</button>
             <button onclick="newSnippet()" title="New Snippet">New</button>
             <div class="status-container">
                 <p id="save-status"></p>
             </div>
+            <div>Temporary password:</div>
+            <div type="text" id="tempPassword" class="hidden"></div>
+        </div>
+        <div contenteditable="true" id="editor" class="editor"></div>
+        <div id="password-overlay" class="hidden">
+            <div class="password-prompt">
+                <h3>Enter Password</h3>
+                <p>This note is encrypted. Please enter the password to decrypt.</p>
+                <input type="password" id="password-input" placeholder="Password..." />
+                <div class="password-prompt-buttons">
+                    <button id="decrypt-button">Decrypt</button>
+                    <button id="cancel-decrypt-button">Cancel</button>
+                </div>
+            </div>
         </div>
 
-        <div contenteditable="true" id="editor" class="editor"></div>
+
     </div>
     <script src="script.js"></script>
 </body>

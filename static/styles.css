@@ -39,7 +39,82 @@ body {
     display: flex;
     flex-direction: column;
     padding: 10px;
+    position: relative;
+    overflow: hidden;
 }
+
+.hidden {
+    display: none !important;
+}
+
+#password-overlay {
+    position: absolute;
+    top: 10px;
+    left: 0;
+    width: 100%;
+    height: calc(100% - 42px);
+    /* Adjust to stay below the button bar */
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    pointer-events: auto;
+}
+
+
+#password-overlay:not(.hidden) {
+    pointer-events: auto;
+}
+
+.password-prompt {
+    background: #2c2c2c;
+    padding: 20px 30px;
+    border-radius: 8px;
+    border: 1px solid #555;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+.password-prompt h3 {
+    margin-top: 0;
+}
+
+.password-prompt input {
+    width: 100%;
+    padding: 8px;
+    margin: 15px 0;
+    box-sizing: border-box;
+    background-color: #1e1e1e;
+    border: 1px solid #555;
+    color: #e0e0e0;
+    border-radius: 4px;
+}
+
+.password-prompt-buttons button {
+    padding: 8px 15px;
+    border: 1px solid #555;
+    cursor: pointer;
+    border-radius: 4px;
+    margin: 0 5px;
+}
+
+#decrypt-button {
+    background-color: #8ab4f8;
+    color: #1e1e1e;
+}
+
+#cancel-decrypt-button {
+    background-color: #3a3a3a;
+    color: #ccc;
+}
+
+.editor.blurred {
+    filter: blur(5px);
+    pointer-events: none;
+    user-select: none;
+}
+
 
 .button-bar {
     display: flex;
@@ -92,6 +167,7 @@ body {
     min-height: 83%;
     margin-top: 10px;
     overflow-y: auto;
+    transition: filter 0.2s ease-in-out;
 }
 
 .editor img {
