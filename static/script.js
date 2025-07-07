@@ -42,6 +42,32 @@ function saveNote() {
     const save_status = document.getElementById("save-status");
     if (!id) return alert("Enter a note name");
 
+    let split_id = id.split(" -");
+    split_id = split_id.filter((i) => i !== "");
+
+    if (split_id.length === 1) {
+        fetch("/save", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: split_id[0], content }),
+        }).then(() => {
+            // alert("Note saved!");
+            save_status.innerHTML = "Note Saved!";
+            loadNotes();
+        });
+        return;
+    } else {
+        fetch("/save", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id, content }),
+        }).then(() => {
+            // alert("Note saved!");
+            save_status.innerHTML = "Note Saved!";
+            loadNotes();
+        });
+    }
+
     fetch("/save", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
