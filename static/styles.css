@@ -21,17 +21,41 @@ body {
     color: #ffffff;
 }
 
-#noteList div {
+#noteList .month-header {
     padding: 5px;
-    margin-bottom: 5px;
-    background: #3a3a3a;
-    border: 1px solid #555;
+    margin-bottom: 3px;
+    font-weight: bold;
     cursor: pointer;
-    color: #ddd;
+    border: 1px solid #555;
 }
 
-#noteList div:hover {
-    background: #505050;
+.month-header:hover {
+    background-color: #505050;
+}
+
+#noteList .note-container>div {
+    padding: 5px;
+    margin-left: 10px;
+    color: #ccc;
+    cursor: pointer;
+    /* border: 1px solid #555; */
+}
+
+#noteList .note-container>div:hover {
+    background-color: #505050;
+}
+
+.standalone-note {
+    padding: 5px;
+    /* margin-left: 10px; */
+    /* background-color: #3a3a3a; */
+    color: #ccc;
+    cursor: pointer;
+    border: 1px solid #555;
+}
+
+.standalone-note:hover {
+    background-color: #505050;
 }
 
 .editor-container {

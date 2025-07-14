@@ -10,6 +10,7 @@ const passwordInput = document.getElementById("password-input");
 const decryptButton = document.getElementById("decrypt-button");
 const cancelDecryptButton = document.getElementById("cancel-decrypt-button");
 const list = document.getElementById("noteList");
+const save_status = document.getElementById("save-status");
 
 let newsnip = false;
 
@@ -26,16 +27,104 @@ function loadNotes() {
         .then((res) => res.json())
         .then((notes) => {
             list.innerHTML = "";
-            if (notes) {
+
+            if (!notes) return;
+
+            const months = {}; // { "July-2025": [note1, note2], ... }
+            const others = [];
+
+            notes.forEach((note) => {
+                const match = note.title.match(
+                    /^(\d{1,2})-(\d{1,2})-(\d{4})\b/
+                ); // match at start of string
+                if (match) {
+                    const day = parseInt(match[1], 10);
+                    const monthNum = parseInt(match[2], 10);
+                    const year = match[3];
+                    const monthName = new Date(
+                        year,
+                        monthNum - 1
+                    ).toLocaleString("default", { month: "long" });
+                    const groupKey = `${monthName}-${year}`;
+
+                    if (!months[groupKey]) months[groupKey] = [];
+                    months[groupKey].push(note);
+                } else {
+                    others.push(note);
+                }
+            });
+
+            // render month groups
+            Object.entries(months).forEach(([month, notes]) => {
+                const monthDiv = document.createElement("div");
+                monthDiv.className = "month-folder";
+
+                const header = document.createElement("div");
+                const icon = document.createElement("i");
+                icon.className = "fa-solid fa-folder";
+                header.append(icon);
+                header.append(" " + month);
+                header.className = "month-header";
+                header.style.cursor = "pointer";
+
+                const noteContainer = document.createElement("div");
+                noteContainer.className = "note-container";
+                // collapse the div
+                noteContainer.style.display = "none";
+
+                header.onclick = () => {
+                    noteContainer.style.display =
+                        noteContainer.style.display === "none"
+                            ? "block"
+                            : "none";
+                };
+
                 notes.forEach((note) => {
-                    const div = document.createElement("div");
-                    div.textContent = note.title;
-                    div.onclick = () => loadNote(note.title);
-                    list.appendChild(div);
+                    const noteDiv = document.createElement("div");
+                    const icon = document.createElement("i");
+                    icon.className = "fa-solid fa-file";
+                    noteDiv.append(icon);
+                    noteDiv.append(" " + note.title);
+                    noteDiv.onclick = () => loadNote(note.title);
+                    noteContainer.appendChild(noteDiv);
                 });
-            }
+
+                monthDiv.appendChild(header);
+                monthDiv.appendChild(noteContainer);
+                list.appendChild(monthDiv);
+            });
+
+            others.sort();
+            others.forEach((note) => {
+                const div = document.createElement("div");
+                const icon = document.createElement("i");
+                icon.className = "fa-solid fa-file";
+                div.append(icon);
+                div.className = "standalone-note";
+                div.append(" " + note.title);
+                // div.className = "standalone-note";
+                // div.textContent = note.title;
+                div.onclick = () => loadNote(note.title);
+                list.appendChild(div);
+            });
         });
 }
+
+// function loadNotes() {
+//     fetch("/notes")
+//         .then((res) => res.json())
+//         .then((notes) => {
+//             list.innerHTML = "";
+//             if (notes) {
+//                 notes.forEach((note) => {
+//                     const div = document.createElement("div");
+//                     div.textContent = note.title;
+//                     div.onclick = () => loadNote(note.title);
+//                     list.appendChild(div);
+//                 });
+//             }
+//         });
+// }
 
 function hidePasswordPrompt() {
     passwordOverlay.classList.add("hidden");
@@ -100,12 +189,14 @@ function handleDecryption() {
         .then((decryptedHtml) => {
             editor.innerHTML = decryptedHtml;
             tempPassword.innerHTML = password;
+            save_status.innerHTML = "Note decrypted!";
             hidePasswordPrompt();
         })
         .catch((error) => {
             alert(error.message);
             tempPassword.innerHTML = "";
             passwordInput.value = "";
+            save_status.innerHTML = "";
             passwordInput.focus();
         });
 }
@@ -113,8 +204,6 @@ function handleDecryption() {
 function saveNote() {
     const id = document.getElementById("noteId").value.trim();
     const content = document.getElementById("editor").innerHTML;
-    const save_status = document.getElementById("save-status");
-
     let split_id = id.split(" -");
 
     split_id = split_id.filter((i) => i !== "");
